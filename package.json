@@ -1,0 +1,13 @@
+{
+  "name": "arma-server-bot",
+  "version": "1.0.0",
+  "description": "Displays information from an Arma 3 server to Discord.",
+  "main": "bot.js",
+  "author": "CreepPork_LV",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "dotenv": "^6.0.0",
+    "gamedig": "^1.0.46"
+  }
+}
