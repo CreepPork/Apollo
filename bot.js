@@ -12,8 +12,9 @@ const Gamedig = require('gamedig');
 /**
  * Gets data from the Server Query and displays appropriate message as an activity, and calls createMessage().
  *
+ * @param {bool} [showMessage=true] Should the bot send a message to the wanted channel.
  */
-function updateInfo()
+function updateInfo(showMessage = true)
 {
     Gamedig.query({
         type: process.env.GAME_TYPE,
@@ -24,7 +25,8 @@ function updateInfo()
         
         client.user.setActivity(`Spēlētāji ${data.players.length}/${data.maxplayers} | ${data.map}`, 'PLAYING');
         
-        createMessage(data, 'ok');
+        if (showMessage)
+            createMessage(data, 'ok');
     }).catch(error => {
         client.user.setActivity('Vee! Voo! Serveris neatbild!', 'PLAYING');
         
@@ -116,5 +118,9 @@ client.on('message', message => {
         updateInfo();
     }
 });
+
+setInterval(() => {
+    updateInfo(false);
+}, process.env.TIME_TO_CHECK_MINUTES * 1000 * 60);
 
 client.login(process.env.SECRET);
