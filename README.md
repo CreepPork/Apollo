@@ -1,6 +1,6 @@
 # Apollo
 
-## Discord Bot to display Arma 3 server info
+## Discord Bot to display server info
 The bot provides displays info about the:
 - Server title
 - Steam link to connect
