@@ -116,7 +116,7 @@ client.on('ready', () => {
 
 // If someone posts !update then refresh
 client.on('message', message => {
-    if (message.content === '!update')
+    if (message.content === process.env.REFRESH_COMMAND)
     {
         message.channel.send('Atjaunoju info!');
         
