@@ -109,10 +109,12 @@ function createMessage(data = {}, status = 'ok')
     }
 }
 
+// When bot is started and ready - update the status
 client.on('ready', () => {
     updateInfo();
 });
 
+// If someone posts !update then refresh
 client.on('message', message => {
     if (message.content === '!update')
     {
@@ -122,8 +124,10 @@ client.on('message', message => {
     }
 });
 
+// Time to recheck the server status
 setInterval(() => {
     updateInfo(false);
 }, process.env.TIME_TO_CHECK_MINUTES * 1000 * 60);
 
+// Login with the secret
 client.login(process.env.SECRET);
