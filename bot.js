@@ -9,6 +9,8 @@ require('dotenv').config();
 //  https://github.com/sonicsnes/node-gamedig
 const Gamedig = require('gamedig');
 
+const locale = require(`./localization/${process.env.LOCALE}`);
+
 /**
  * Gets data from the Server Query and displays appropriate message as an activity, and calls createMessage().
  *
@@ -23,12 +25,12 @@ function updateInfo(showMessage = true)
         port_query: process.env.GAME_QUERY_PORT
     }).then(data => {
         
-        client.user.setActivity(`Spēlētāji ${data.players.length}/${data.maxplayers} | ${data.map}`, 'PLAYING');
+        client.user.setActivity(`${locale.playingMessage} ${data.players.length}/${data.maxplayers} | ${data.map}`, 'PLAYING');
         
         if (showMessage)
             createMessage(data, 'ok');
     }).catch(error => {
-        client.user.setActivity('Vee! Voo! Serveris neatbild!', 'PLAYING');
+        client.user.setActivity(locale.serverNotResponding, 'PLAYING');
         
         createMessage({}, 'error');
         
@@ -70,20 +72,20 @@ function createMessage(data = {}, status = 'ok')
                     fields:
                     [
                         {
-                            name: 'Spēlētāji',
+                            name: locale.richEmbed.normal.players,
                             value: `${data.players.length} no ${data.maxplayers}`
                         },
                         {
-                            name: 'Misijas tips',
+                            name: locale.richEmbed.normal.gamemode,
                             value: data.raw.game
                         },
                         {
-                            name: 'Karte',
+                            name: locale.richEmbed.normal.map,
                             value: data.map
                         },
                         {
-                            name: 'Parole',
-                            value: data.password ? 'Ir' : 'Nav'
+                            name: locale.richEmbed.normal.password,
+                            value: data.password ? locale.richEmbed.normal.password.yes : locale.richEmbed.normal.password.no
                         },
                     ],
                 }
@@ -99,10 +101,10 @@ function createMessage(data = {}, status = 'ok')
                     color: status,
                     author:
                     {
-                        name: 'Serveris neatbild!',
+                        name: locale.richEmbed.error.title,
                         icon_url: client.user.avatarURL
                     },
-                    description: 'Serveris neatbild, lūdzu salabojiet admini!'
+                    description: locale.richEmbed.error.description
                 }
             });
         }
@@ -118,7 +120,7 @@ client.on('ready', () => {
 client.on('message', message => {
     if (message.content === process.env.REFRESH_COMMAND)
     {
-        message.channel.send('Atjaunoju info!');
+        message.channel.send(locale.refreshing);
         
         updateInfo();
     }
