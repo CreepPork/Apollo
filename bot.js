@@ -111,7 +111,7 @@ function createMessage(data = {}, status = 'ok')
 
 // When bot is started and ready - update the status
 client.on('ready', () => {
-    updateInfo();
+    updateInfo(false);
 });
 
 // If someone posts !update then refresh
