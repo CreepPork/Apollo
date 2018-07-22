@@ -50,59 +50,62 @@ function createMessage(data = {}, status = 'ok')
         ok: process.env.STATUS_COLOR_OK,
         error: process.env.STATUS_COLOR_ERROR
     };
-    
-    if (status === 'ok')
+
+    if (channel != '')
     {
-        status = statuses.ok;
-        
-        client.channels.get(channel).send({
-            embed:
-            {
-                color: status,
-                author:
+        if (status === 'ok')
+        {
+            status = statuses.ok;
+            
+            client.channels.get(channel).send({
+                embed:
                 {
-                    name: data.name,
-                    icon_url: client.user.avatarURL
-                },
-                title: `steam://connect/${data.query.host}:${data.query.port_query}`,
-                fields:
-                [
+                    color: status,
+                    author:
                     {
-                        name: 'Spēlētāji',
-                        value: `${data.players.length} no ${data.maxplayers}`
+                        name: data.name,
+                        icon_url: client.user.avatarURL
                     },
-                    {
-                        name: 'Misijas tips',
-                        value: data.raw.game
-                    },
-                    {
-                        name: 'Karte',
-                        value: data.map
-                    },
-                    {
-                        name: 'Parole',
-                        value: data.password ? 'Ir' : 'Nav'
-                    },
-                ],
-            }
-        });
-    }
-    else
-    {
-        status = statuses.error;
-        
-        client.channels.get(channel).send({
-            embed:
-            {
-                color: status,
-                author:
+                    title: `steam://connect/${data.query.host}:${data.query.port_query}`,
+                    fields:
+                    [
+                        {
+                            name: 'Spēlētāji',
+                            value: `${data.players.length} no ${data.maxplayers}`
+                        },
+                        {
+                            name: 'Misijas tips',
+                            value: data.raw.game
+                        },
+                        {
+                            name: 'Karte',
+                            value: data.map
+                        },
+                        {
+                            name: 'Parole',
+                            value: data.password ? 'Ir' : 'Nav'
+                        },
+                    ],
+                }
+            });
+        }
+        else
+        {
+            status = statuses.error;
+            
+            client.channels.get(channel).send({
+                embed:
                 {
-                    name: 'Serveris neatbild!',
-                    icon_url: client.user.avatarURL
-                },
-                description: 'Serveris neatbild, lūdzu salabojiet admini!'
-            }
-        });
+                    color: status,
+                    author:
+                    {
+                        name: 'Serveris neatbild!',
+                        icon_url: client.user.avatarURL
+                    },
+                    description: 'Serveris neatbild, lūdzu salabojiet admini!'
+                }
+            });
+        }
     }
 }
 
