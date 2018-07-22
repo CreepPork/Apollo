@@ -3,7 +3,10 @@ module.exports = {
     serverNotResponding: 'Wee! Woo! Server is not responding!',
     richEmbed: {
         normal: {
-            players: 'Players',
+            playerCount: {
+                players: 'Players',
+                outOf: 'out of'
+            },
             gamemode: 'Gamemode',
             map: 'Map',
             password: {

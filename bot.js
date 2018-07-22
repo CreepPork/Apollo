@@ -72,8 +72,8 @@ function createMessage(data = {}, status = 'ok')
                     fields:
                     [
                         {
-                            name: locale.richEmbed.normal.players,
-                            value: `${data.players.length} no ${data.maxplayers}`
+                            name: locale.richEmbed.normal.playerCount.players,
+                            value: `${data.players.length} ${locale.richEmbed.normal.playerCount.outOf} ${data.maxplayers}`
                         },
                         {
                             name: locale.richEmbed.normal.gamemode,

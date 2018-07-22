@@ -3,7 +3,10 @@ module.exports = {
     serverNotResponding: 'Vee! Voo! Serveris neatbild!',
     richEmbed: {
         normal: {
-            players: 'Spelētāji',
+            playerCount: {
+                players: 'Spelētāji',
+                outOf: 'no'
+            },
             gamemode: 'Misijas tips',
             map: 'Karte',
             password: {
