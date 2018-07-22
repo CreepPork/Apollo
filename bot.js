@@ -12,6 +12,8 @@ const Gamedig = require('gamedig');
 // Get the current locale (returns as an object)
 const locale = require(`./localization/${process.env.LOCALE}`);
 
+let failedRefreshAttempts = 0;
+
 /**
  * Gets data from the Server Query and displays appropriate message as an activity, and calls createMessage().
  *
@@ -25,17 +27,25 @@ function updateInfo(showMessage = true)
         port: process.env.GAME_PORT,
         port_query: process.env.GAME_QUERY_PORT
     }).then(data => {
+        failedRefreshAttempts = 0;
         
         client.user.setActivity(`${locale.playingMessage} ${data.players.length}/${data.maxplayers} | ${data.map}`, 'PLAYING');
         
         if (showMessage)
             createMessage(data, 'ok');
     }).catch(error => {
-        client.user.setActivity(locale.serverNotResponding, 'PLAYING');
-        
-        createMessage({}, 'error');
-        
-        console.error(error);
+        failedRefreshAttempts++;
+
+        if (failedRefreshAttempts > process.env.MAXIMUM_REFRESH_FAILURES)
+        {
+            client.user.setActivity(locale.serverNotResponding, 'PLAYING');
+            
+            createMessage({}, 'error');
+            
+            console.error(error);
+
+            failedRefreshAttempts = 0;
+        }
     });
 }
 
