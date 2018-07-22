@@ -85,7 +85,7 @@ function createMessage(data = {}, status = 'ok')
                             value: data.map
                         },
                         {
-                            name: locale.richEmbed.normal.password,
+                            name: locale.richEmbed.normal.password.password,
                             value: data.password ? locale.richEmbed.normal.password.yes : locale.richEmbed.normal.password.no
                         },
                     ],
