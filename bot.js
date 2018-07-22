@@ -60,14 +60,14 @@ function updateInfo(editMessage = true, forceCreateMessage = false)
     }).then(data => {
         failedRefreshAttempts = 0;
         
-        client.user.setActivity(`${locale.playingMessage} ${data.players.length}/${data.maxplayers} | ${data.map}`, 'PLAYING');
+        client.user.setActivity(`${locale.playingMessage} ${data.raw.numplayers}/${data.maxplayers} | ${data.map}`, 'PLAYING');
 
         if (editMessage)
             createMessage(data, 'ok', forceCreateMessage);
     }).catch(error => {
         failedRefreshAttempts++;
 
-        console.log(
+        console.warn(
             `Failed to refresh data!
             Remaining attempts ${failedRefreshAttempts} / ${process.env.MAXIMUM_REFRESH_FAILURES}
             ${error}`
@@ -108,6 +108,14 @@ function createMessage(data = {}, status = 'ok', forceCreateMessage = false)
         {
             status = statuses.ok;
 
+            let players = `**${data.raw.numplayers} ${locale.richEmbed.normal.playerCount.outOf} ${data.maxplayers}**\n`;
+
+            Object.entries(data.players).forEach(element => {
+                let object = element[1];
+
+                players += `- ${object.name}\n`;
+            });
+
             let embed = 
             {
                 color: status,
@@ -118,10 +126,6 @@ function createMessage(data = {}, status = 'ok', forceCreateMessage = false)
                 title: `steam://connect/${data.query.host}:${data.query.port_query}`,
                 fields:
                 [
-                    {
-                        name: locale.richEmbed.normal.playerCount.players,
-                        value: `${data.players.length} ${locale.richEmbed.normal.playerCount.outOf} ${data.maxplayers}`
-                    },
                     {
                         name: locale.richEmbed.normal.gamemode,
                         value: data.raw.game
@@ -134,7 +138,12 @@ function createMessage(data = {}, status = 'ok', forceCreateMessage = false)
                         name: locale.richEmbed.normal.password.password,
                         value: data.password ? locale.richEmbed.normal.password.yes : locale.richEmbed.normal.password.no
                     },
+                    {
+                        name: locale.richEmbed.normal.playerCount.players,
+                        value: players
+                    },
                 ],
+                timestamp: new Date(),
             };
 
             if (getLastMessageID() === '' || forceCreateMessage)
