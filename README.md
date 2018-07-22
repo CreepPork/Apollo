@@ -1,7 +1,7 @@
 # Apollo
 
 ## Discord Bot to display server info
-The bot provides displays info about the:
+The bot displays info about the:
 - Server title
 - Steam link to connect
 - Player count
