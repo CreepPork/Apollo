@@ -66,8 +66,7 @@ function createMessage(data = {}, status = 'ok')
                     color: status,
                     author:
                     {
-                        name: data.name,
-                        icon_url: client.user.avatarURL
+                        name: data.name
                     },
                     title: `steam://connect/${data.query.host}:${data.query.port_query}`,
                     fields:
@@ -102,8 +101,7 @@ function createMessage(data = {}, status = 'ok')
                     color: status,
                     author:
                     {
-                        name: locale.richEmbed.error.title,
-                        icon_url: client.user.avatarURL
+                        name: locale.richEmbed.error.title
                     },
                     description: locale.richEmbed.error.description
                 }
