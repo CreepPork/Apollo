@@ -9,6 +9,7 @@ require('dotenv').config();
 //  https://github.com/sonicsnes/node-gamedig
 const Gamedig = require('gamedig');
 
+// Get the current locale (returns as an object)
 const locale = require(`./localization/${process.env.LOCALE}`);
 
 /**
