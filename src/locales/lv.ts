@@ -12,4 +12,10 @@ export default class LocaleLatvian extends Locale {
     public mission = 'Misija';
     public playerCount = 'Spēlētāju skaits';
     public playerList = 'Spēlētāju saraksts';
+    public noPlayers = 'Nav spelētāju serverī';
+    public serverOffline = 'Serveris nav pieejams!';
+    public presence = {
+        error: 'skatos, kā admini labo serveri',
+        ok: 'Zevs uz',
+    };
 }

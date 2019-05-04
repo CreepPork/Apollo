@@ -12,4 +12,10 @@ export default class LocaleEnglish extends Locale {
     public mission = 'Mission';
     public playerCount = 'Player count';
     public playerList = 'Player list';
+    public noPlayers = 'No players in the server';
+    public serverOffline = 'Server is offline!';
+    public presence = {
+        error: 'server managers fixing the server',
+        ok: 'Zeus on',
+    };
 }
