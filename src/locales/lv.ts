@@ -1,21 +1,28 @@
-import Locale from '../locale';
+import ILocale from '../locale';
 
-export default class LocaleLatvian extends Locale {
-    public queryTime = 'Atjauninājuma laiks';
-    public statuses = {
+const locale: ILocale = {
+    address: 'Adrese',
+    map: 'Karte',
+    mission: 'Misija',
+    noPermissions: `tev nav piekļuves, lai es izpildītu tavu komandu!`,
+    noPlayers: 'Nav spēlētāju',
+    playerCount: 'Spēlētāju skaits',
+    playerList: 'Spēlētāju saraksts',
+    presence: {
+        botFailure: 'bota kļūdu',
+        error: 'kā serveri labo',
+        ok: 'Zevs uz',
+    },
+    queryTime: 'Atjauninājuma laiks',
+    serverDownMessages: {
+        pingMessage: ', serveris neatbild, lūdzu salabo!',
+    },
+    serverOffline: 'Serveris nav pieejams',
+    statuses: {
         offline: 'Nepieejams',
         online: 'Pieejams',
         status: 'Statuss',
-    };
-    public address = 'Adrese';
-    public map = 'Karte';
-    public mission = 'Misija';
-    public playerCount = 'Spēlētāju skaits';
-    public playerList = 'Spēlētāju saraksts';
-    public noPlayers = 'Nav spelētāju';
-    public serverOffline = 'Serveris nav pieejams!';
-    public presence = {
-        error: 'skatos, kā admini labo serveri',
-        ok: 'Zevs uz',
-    };
+    },
 }
+
+export default locale;

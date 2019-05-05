@@ -11,8 +11,8 @@ export default class Server {
         this.port = port;
     }
 
-    public queryServer(): Promise<gamedig.QueryResult> {
-        return new Promise((resolve, reject) => {
+    public queryServer(): Promise<gamedig.QueryResult | undefined> {
+        return new Promise(resolve => {
             gamedig.query({
                 host: this.ip,
                 port: this.port,
@@ -24,6 +24,7 @@ export default class Server {
             })
             .catch(error => {
                 console.warn(error);
+                resolve(undefined);
             });
         });
     }

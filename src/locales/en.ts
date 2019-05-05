@@ -1,21 +1,28 @@
-import Locale from '../locale';
+import ILocale from '../locale';
 
-export default class LocaleEnglish extends Locale {
-    public queryTime = 'Query Time';
-    public statuses = {
+const locale: ILocale = {
+    address: 'Address',
+    map: 'Map',
+    mission: 'Mission',
+    noPermissions: `you don't have the permissions to do that!`,
+    noPlayers: 'No players',
+    playerCount: 'Player count',
+    playerList: 'Player list',
+    presence: {
+        botFailure: 'bot failure',
+        error: 'the server getting fixed',
+        ok: 'Zeus on',
+    },
+    queryTime: 'Query Time',
+    serverDownMessages: {
+        pingMessage: ', the server is not responding, please fix it!',
+    },
+    serverOffline: 'Server is offline!',
+    statuses: {
         offline: 'Offline',
         online: 'Online',
         status: 'Status',
-    };
-    public address = 'Address';
-    public map = 'Map';
-    public mission = 'Mission';
-    public playerCount = 'Player count';
-    public playerList = 'Player list';
-    public noPlayers = 'No players';
-    public serverOffline = 'Server is offline!';
-    public presence = {
-        error: 'server managers fixing the server',
-        ok: 'Zeus on',
-    };
-}
+    },
+};
+
+export default locale;

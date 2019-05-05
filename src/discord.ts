@@ -14,6 +14,11 @@ export default class Discord {
         return this._client;
     }
 
+    private get channel(): discord.TextChannel | discord.GroupDMChannel | discord.DMChannel | undefined {
+        /// @ts-ignore Typings are incorrect, it returns extended types of channels
+        return this._client.channels.get(Environment.get('channel_id'));
+    }
+
     constructor(secret: string) {
         this._client = new discord.Client();
         this._client.login(secret).catch(error => console.error(error));
@@ -42,45 +47,104 @@ export default class Discord {
         }
     }
 
-    public setActivity(query?: QueryResult) {
-        if (query) {
+    public setActivity(status: 'ok' | 'serverError' | 'botError', query?: QueryResult) {
+        if (query && status === 'ok') {
             this._client.user.setPresence({
                 game: {
                     name: `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`,
                     type: 'PLAYING',
                 },
                 status: 'online',
-            }).catch(error => {
-                console.error(error);
-            });
-        } else {
+            }).catch(error => console.error(error));
+        } else if (status === 'serverError') {
             this._client.user.setPresence({
                 game: {
                     name: this.locale.presence.error,
                     type: 'WATCHING',
                 },
                 status: 'dnd',
-            }).catch(error => {
-                console.error(error);
-            });
+            }).catch(error => console.error(error));
+        } else {
+            this._client.user.setPresence({
+                game: {
+                    name: this.locale.presence.botFailure,
+                    type: 'STREAMING',
+                },
+                status: 'idle',
+            }).catch(error => console.error(error));
         }
     }
 
-    public postMessage(embed: discord.RichEmbed): Promise<discord.Message | discord.Message[]> {
-        return new Promise(async (resolve, reject) => {
-            const channel = this._client.channels.get(Environment.get('channel_id'));
-
-            if (channel) {
-                // @ts-ignore It's really bad design of discord.js
-                channel.send({ embed }).then(message => {
-                    resolve(message);
-                }).catch((error: any) => reject(error));
+    public postMessage(content: discord.RichEmbed | string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (this.channel) {
+                this.channel.send(typeof content === 'string' ? content : { embed: content }).then(messages => {
+                    if (Array.isArray(messages)) {
+                        resolve(messages[0].id);
+                    } else {
+                        resolve(messages.id);
+                    }
+                }).catch(error => reject(error));
+            } else {
+                reject('Channel does not exist.');
             }
         });
     }
 
+    public editMessage(messageId: string, embed: discord.RichEmbed): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (this.channel) {
+                this.channel.fetchMessage(messageId).then(message => {
+                    message.edit({ embed })
+                        .then(editedMessage => resolve(editedMessage.id))
+                        .catch(error => reject(error));
+                }).catch((error: any) => reject(error));
+            } else {
+                reject('Channel does not exist.');
+            }
+        });
+    }
+
+    public deleteMessage(messageId: string): Promise<discord.Message> {
+        return new Promise((resolve, reject) => {
+            if (this.channel) {
+                this.channel.fetchMessage(messageId).then(message => {
+                    message.delete().then(deletedMessage => {
+                        resolve(deletedMessage);
+                    });
+                }).catch(error => reject(error));
+            } else {
+                reject('Channel does not exist.');
+            }
+        });
+    }
+
+    public startThinking(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (this.channel) {
+                resolve(this.channel.startTyping());
+            } else {
+                reject('Channel does not exist.');
+            }
+        });
+    }
+
+    public stopThinking(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (this.channel) {
+                resolve(this.channel.stopTyping());
+            } else {
+                reject('Channel does not exist.');
+            }
+        });
+    }
+
+    public generatePing(id: string): string {
+        return `<@&${id}>`;
+    }
+
     private getColor(status: 'error' | 'ok'): Promise<string> {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const colors: IColors = {ok: Environment.get('color_ok'), error: Environment.get('color_error')};
 
             if (status === 'error') { resolve(colors.error); }
@@ -97,6 +161,11 @@ export default class Discord {
                 name: this.locale.statuses.status,
                 value: this.locale.statuses.offline,
             },
+            {
+                inline: false,
+                name: `Server is down!`,
+                value: `<@&${Environment.get('server_manager_role_id')}>, please fix the server!`,
+            },
         ];
     }
 
@@ -108,7 +177,7 @@ export default class Discord {
             query.players.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 
             query.players.forEach(player => {
-                playerListData.push(`• ${player.name} (${Time.secondsToHhMmSs(player.time)})`);
+                playerListData.push(`• ${player.name} (${Time.secondsToHhMm(player.time)})`);
             });
         } else {
             playerListData.push(this.locale.noPlayers);
