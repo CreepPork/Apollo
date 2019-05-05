@@ -1,3 +1,5 @@
 .env
 node_modules/
-message.txt
+dist/*
+!dist/.gitkeep
+settings.json

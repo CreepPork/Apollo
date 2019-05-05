@@ -1,13 +1,26 @@
 {
-  "name": "arma-server-bot",
-  "version": "1.0.0",
-  "description": "Displays information from an Arma 3 server to Discord.",
-  "main": "bot.js",
+  "name": "apollo",
+  "version": "2.0.0",
+  "description": "Discord bot that allows to get status updates on your server.",
+  "main": "dist/main.js",
+  "repository": "https://github.com/CreepPork/Apollo",
+  "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/.ts'",
+    "start": "node .",
+    "build": "tsc -p tsconfig.json",
+    "watch": "npm run build -- --watch"
+  },
   "author": "CreepPork_LV",
   "license": "MIT",
-  "dependencies": {
-    "discord.js": "^11.3.2",
-    "dotenv": "^6.0.0",
-    "gamedig": "^1.0.46"
-  }
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^11.13.6",
+    "discord.js": "^11.4.2",
+    "dotenv": "^7.0.0",
+    "gamedig": "^2.0.14",
+    "moment": "^2.24.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.4"
+  },
+  "dependencies": {}
 }
