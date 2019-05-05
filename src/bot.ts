@@ -11,7 +11,7 @@ export default class Bot {
     }
 
     constructor() {
-        this.discord = new Discord(Environment.get('ip'));
+        this.discord = new Discord(Environment.get('secret'));
         this.server = new Server(Environment.get('ip'), Environment.getNumber('port'));
     }
 
