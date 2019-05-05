@@ -25,7 +25,8 @@ export default class Discord {
         if (query) {
             return new discord.RichEmbed({
                 color: await this.getColor('ok'),
-                description: '–'.repeat(query.name.length),
+                // As the ─ is just a little larger than the actual letters, it isn't equal to the letter count
+                description: '─'.repeat(query.name.length * 0.625),
                 fields: await this.getSuccessFields(query),
                 timestamp: new Date(),
                 title: query.name,
@@ -33,7 +34,7 @@ export default class Discord {
         } else {
             return new discord.RichEmbed({
                 color: await this.getColor('error'),
-                description: '–'.repeat(this.locale.serverOffline.length),
+                description: '─'.repeat(this.locale.serverOffline.length * 0.625),
                 fields: await this.getErrorFields(),
                 timestamp: new Date(),
                 title: this.locale.serverOffline,
