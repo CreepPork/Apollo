@@ -43,6 +43,7 @@
 - Mentions a role when server is down
 - Displays when bot is refreshing info
 - Times to refresh before failing and displaying on Discord
+- Sentry error managment
 
 ## Requirements
 - Node >= 10.15.3
