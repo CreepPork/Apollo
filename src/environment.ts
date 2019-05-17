@@ -53,6 +53,7 @@ export type getValues =
     'refresh_command' |
     'refresh_force_command' |
     'limit_refresh_force_to_manager' |
+    'reply_dm_on_no_perms' |
     'channel_id' |
     'server_manager_role_id' |
     'time_to_check_minutes' |

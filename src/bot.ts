@@ -61,7 +61,11 @@ export default class Bot {
                         if (message.member.roles.get(Environment.get('server_manager_role_id'))) {
                             this.refresh(true);
                         } else {
-                            this.discord.postMessage(`${message.member} ${Environment.locale.noPermissions}`);
+                            if (Environment.get<boolean>('reply_dm_on_no_perms', 'boolean')) {
+                                message.author.send(`${message.member} ${Environment.locale.noPermissions}`);
+                            } else {
+                                message.channel.send(`${message.member} ${Environment.locale.noPermissions}`);
+                            }
                         }
                     } else {
                         this.refresh(true);
