@@ -46,6 +46,7 @@ export interface IColors {
 
 export type getValues =
     'ip' |
+    'display_ip' |
     'port' |
     'color_ok' |
     'color_error' |
