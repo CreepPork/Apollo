@@ -28,6 +28,8 @@ declare module 'gamedig' {
         notes: object;
         raw: ArmaRaw;
         query?: object;
+        connect: string;
+        ping: number;
     }
 
     export function query(

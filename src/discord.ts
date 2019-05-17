@@ -234,7 +234,7 @@ export default class Discord {
             {
                 inline: false,
                 name: this.locale.address,
-                value: `steam://connect/${Environment.get('ip')}:${Environment.get('port')}`,
+                value: `steam://connect/${query.connect}`,
             },
             {
                 inline: false,
