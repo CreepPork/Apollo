@@ -37,6 +37,9 @@ declare module 'gamedig' {
 
     export function query(options: QueryOptions): Promise<QueryResult>;
 
+    /**
+     * See this [Gist](https://gist.github.com/CreepPork/2223be9e242fcfa04ba6155dc8617444) for more details.
+     */
     export interface ArmaRaw {
         protocol: number;
 
@@ -93,8 +96,14 @@ declare module 'gamedig' {
         gameid: string;
 
         /**
-         * Unescaped string with loaded public keys on the server (for addons).
+         * Unescaped object of strings with loaded public keys on the server (for addons).
          */
-        rules: object;
+        rules: {
+            [x: string]: string,
+            // '\u0001\u0004': '\u0002\u0001\u0002w\u0003�\u0001\u0001�\u0016N����=�>�2\u0018�j.I]\u0010�\t`���S�QW�|\u0001\u0003\u0001\u0002\u001a\u0019cba_3.9.0.181012-85445afa\u0012AdvancedRappelling\nstui_1.2.3\u0018jsrs_soundmod_cup_compat\ns',
+            // '\u0002\u0004': 'tui_1.2.4\u000eVictor9401_dev\tbadbenson\u001acba_3.11.1.190503-4a491780\u0013jsrs_soundmod_extra\u000fachilles_v1.2.1\u00052600K\fachilles_dev\rjsrs_sound',
+            // '\u0003\u0004': 'mod\u0019cba_3.7.1.180604-52b821f0\nstui_1.2.2\u000bruPal_mpkey\u0002a3\u0019cba_3.7.0.180430-b062cd5b\u001acba_3.11.0.190501-91b213d1\u000fachilles_v1.2.0\u001acb',
+            // '\u0004\u0004': 'a_3.10.1.190316-15d15f54\u0019cba_3.9.1.181229-cc913854\u001acba_3.11.2.190515-cec0e465\t2600K_dev\u0003ATH\u0019cba_3.8.0.180801-4965324d'
+        }
     }
 }
