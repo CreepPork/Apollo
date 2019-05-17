@@ -19,7 +19,7 @@
     "typescript": "^3.4.4"
   },
   "dependencies": {
-    "discord.js": "^11.4.2",
+    "discord.js": "^11.5.0",
     "dotenv": "^8.0.0",
     "gamedig": "^2.0.14",
     "moment": "^2.24.0"

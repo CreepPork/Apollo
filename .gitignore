@@ -3,3 +3,4 @@ node_modules/
 dist/*
 !dist/.gitkeep
 settings.json
+nohup.out
