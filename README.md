@@ -38,7 +38,8 @@
 - Refresh timestamp
 - Activity refreshes on shorthand info
 - Handles server not responding
-- Permissions for force command
+- Permissions for force command (also takes into account above roles)
+  - On permission fail can be customized to return a message in the message channel or direct message to user
 - Mentions a role when server is down
 - Displays when bot is refreshing info
 - Times to refresh before failing and displaying on Discord
