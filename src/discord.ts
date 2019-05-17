@@ -143,6 +143,46 @@ export default class Discord {
         return `<@&${id}>`;
     }
 
+    public getAllRoles(guildId: string): discord.Collection<discord.Snowflake, discord.Role> | undefined {
+        const guild = this.client.guilds.get(guildId);
+
+        if (guild) {
+            return guild.roles;
+        } else {
+            return undefined;
+        }
+    }
+
+    public getRolesAboveOrSame(role: discord.Role): discord.Role[] {
+        const allRoles = this.getAllRoles(role.guild.id);
+
+        const roles: discord.Role[] = [];
+
+        if (allRoles) {
+            allRoles.forEach(dRole => {
+                if (dRole.comparePositionTo(role) > 0) {
+                    roles.push(dRole);
+                } else if (dRole.comparePositionTo(role) === 0) {
+                    roles.push(dRole);
+                }
+            });
+        }
+
+        return roles;
+    }
+
+    public doesUserHaveRoles(member: discord.GuildMember, roles: discord.Role[]): boolean {
+        let hasRole = false;
+
+        roles.forEach(role => {
+            if (member.roles.has(role.id)) {
+                hasRole = true;
+            }
+        });
+
+        return hasRole;
+    }
+
     private getColor(status: 'error' | 'ok'): Promise<string> {
         return new Promise((resolve, reject) => {
             const colors: IColors = {ok: Environment.get('color_ok'), error: Environment.get('color_error')};
