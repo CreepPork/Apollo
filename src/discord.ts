@@ -203,8 +203,9 @@ export default class Discord {
             },
             {
                 inline: false,
-                name: `Server is down!`,
-                value: `<@&${Environment.get('server_manager_role_id')}>, please fix the server!`,
+                name: this.locale.serverDownMessages.serverDownAlternative,
+                value: `${this.generatePing(Environment.get('server_manager_role_id'))}` +
+                    `${this.locale.serverDownMessages.pleaseFixServer}`,
             },
         ];
     }

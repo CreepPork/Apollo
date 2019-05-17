@@ -16,6 +16,8 @@ const locale: ILocale = {
     queryTime: 'Query Time',
     serverDownMessages: {
         pingMessage: ', the server is not responding, please fix it!',
+        pleaseFixServer: ', please fix the server!',
+        serverDownAlternative: 'Server is down!',
     },
     serverOffline: 'Server is offline!',
     statuses: {

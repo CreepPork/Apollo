@@ -14,6 +14,8 @@ export default interface ILocale {
     queryTime: string;
     serverDownMessages: {
         pingMessage: string;
+        serverDownAlternative: string;
+        pleaseFixServer: string;
     };
     serverOffline: string;
     statuses: {
