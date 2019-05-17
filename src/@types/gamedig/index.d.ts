@@ -50,18 +50,37 @@ declare module 'gamedig' {
          */
         game: string;
 
-        steamappid: number;
+        /**
+         * Seems to always return 0 for Arma 3.
+         */
+        steamappid: 0;
+
         numplayers: number;
-        numbots: number;
-        listentype: string;
-        environment: string;
-        secure: number;
+        numbots: 0;
+
+        /**
+         * Server type. `d` for dedicated, `l` for non-dedicated.
+         */
+        listentype: 'd' | 'l';
+
+        /**
+         * Returns server OS. `w` for Windows and `l` for Linux.
+         */
+        environment: 'w' | 'l';
+
+        /**
+         * Returns if server is password protected.
+         */
+        secure: 0 | 1;
 
         /**
          * Returns server version `1.xx.xxxxxx`.
          */
         version: string;
 
+        /**
+         * Server's steam ID
+         */
         steamid: string;
 
         /**
@@ -74,7 +93,7 @@ declare module 'gamedig' {
         gameid: string;
 
         /**
-         * Proprietary format for possible addon name, keys and version.
+         * Unescaped string with loaded public keys on the server (for addons).
          */
         rules: object;
     }
