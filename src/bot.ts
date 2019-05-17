@@ -80,9 +80,12 @@ export default class Bot {
             this.discord.editMessage(messageId, await this.discord.createRichEmbed(query)).then(() => {
                 this.discord.setActivity(query ? 'ok' : 'serverError', query);
                 this.discord.stopThinking();
-            }).catch(() => {
+            }).catch(error => {
                 this.discord.setActivity('botError');
                 this.discord.stopThinking();
+
+                console.error(`Failed to edit a current message, id: ${messageId}.`);
+                console.error(error);
             });
         } else {
             if (forceNewMessage && messageId) {
@@ -94,9 +97,12 @@ export default class Bot {
 
                 this.discord.setActivity(query ? 'ok' : 'serverError', query);
                 this.discord.stopThinking();
-            }).catch(() => {
+            }).catch(error => {
                 this.discord.setActivity('botError');
                 this.discord.stopThinking();
+
+                console.error('Failed to create a new message.');
+                console.error(error);
             });
         }
 
