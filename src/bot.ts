@@ -50,6 +50,8 @@ export default class Bot {
             this.refresh();
 
             this.refreshLoop();
+
+            console.info('Apollo is ready.');
         });
 
         this.discord.client.on('message', message => {

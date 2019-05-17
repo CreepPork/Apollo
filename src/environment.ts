@@ -58,4 +58,5 @@ export type getValues =
     'server_manager_role_id' |
     'time_to_check_minutes' |
     'maximum_refresh_failures' |
+    'sentry_dsn' |
     'secret';

@@ -5,6 +5,8 @@
         "noImplicitAny": true,
         "strict": true,
         "sourceMap": true,
+        "inlineSources": true,
+        "sourceRoot": "/",
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
