@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 import ILocale from './locale';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 export default class Environment {
     public static get locale(): ILocale {
