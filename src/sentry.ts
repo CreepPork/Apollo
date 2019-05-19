@@ -2,6 +2,8 @@ import { CaptureConsole, RewriteFrames } from '@sentry/integrations';
 import * as sentry from '@sentry/node';
 import Environment from './environment';
 
+const { name, version } = require('../package.json');
+
 export default class Sentry {
     public static init() {
         global.__rootdir__ = __dirname || process.cwd();
@@ -14,6 +16,7 @@ export default class Sentry {
                 }),
                 new CaptureConsole(),
             ],
+            release: `${name}@${version}`,
         });
 
         console.info('Sentry initalized.');
