@@ -73,7 +73,11 @@ export default class Bot {
                 this.refresh(true);
             }
         } else if (message.content === Environment.get('maintenance_toggle_command', 'string', true)) {
-            this.toggleMaintenanceMode(message);
+            if (this.discord.doesUserHaveServerManagerPermissions(message.member)) {
+                this.toggleMaintenanceMode(message);
+            } else {
+                this.replyNoPermissions(message);
+            }
         }
     }
 
@@ -114,38 +118,18 @@ export default class Bot {
     }
 
     private refreshBotWithRolePermissions(message: Message) {
-        const roles = this.discord.getAllRoles(message.member.guild.id);
-
-        if (roles) {
-            const serverManager = roles.get(Environment.get('server_manager_role_id'));
-
-            if (serverManager) {
-                const allowedRoles = this.discord.getRolesAboveOrSame(serverManager);
-
-                if (this.discord.doesUserHaveRoles(message.member, allowedRoles)) {
-                    this.refresh(true);
-                } else {
-                    if (Environment.get<boolean>('reply_dm_on_no_perms', 'boolean')) {
-                        message.author.send(`${message.member} ${Environment.locale.noPermissions}`);
-                    } else {
-                        message.channel.send(`${message.member} ${Environment.locale.noPermissions}`);
-                    }
-                }
-            } else {
-                console.warn(
-                    'You have turned on limit force refresh to server managers or above.',
-                    `I can't find the server manager role. Did you enter the ID correctly?`,
-                );
-
-                this.refresh(true);
-            }
-        } else {
-            console.warn(
-                'You have turned on limit force refresh to server managers or above.',
-                `But I can't find any server roles. Does your server have roles set up?`,
-            );
-
+        if (this.discord.doesUserHaveServerManagerPermissions(message.member)) {
             this.refresh(true);
+        } else {
+            this.replyNoPermissions(message);
+        }
+    }
+
+    private replyNoPermissions(message: Message) {
+        if (Environment.get<boolean>('reply_dm_on_no_perms', 'boolean')) {
+            message.author.send(`${message.member} ${Environment.locale.noPermissions}`);
+        } else {
+            message.channel.send(`${message.member} ${Environment.locale.noPermissions}`);
         }
     }
 

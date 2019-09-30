@@ -219,6 +219,34 @@ export default class Discord {
         return hasRole;
     }
 
+    public doesUserHaveServerManagerPermissions(member: discord.GuildMember): boolean {
+        const roles = this.getAllRoles(member.guild.id);
+
+        if (roles) {
+            const serverManager = roles.get(Environment.get('server_manager_role_id'));
+
+            if (serverManager) {
+                const allowedRoles = this.getRolesAboveOrSame(serverManager);
+
+                if (this.doesUserHaveRoles(member, allowedRoles)) {
+                    return true;
+                }
+            } else {
+                console.warn(
+                    'You have turned on limit force refresh to server managers or above.',
+                    `I can't find the server manager role. Did you enter the ID correctly?`,
+                );
+            }
+        } else {
+            console.warn(
+                'You have turned on limit force refresh to server managers or above.',
+                `But I can't find any server roles. Does your server have roles set up?`,
+            );
+        }
+
+        return false;
+    }
+
     private getColor(status: keyof IColors): Promise<string> {
         return new Promise((resolve, reject) => {
             const colors: IColors = {
