@@ -296,7 +296,7 @@ export default class Discord {
             const message = await this.channel.fetchMessage(reactionId);
 
             if (message) {
-                this.reaction = await message.react('🚨');
+                this.reaction = await message.react(Environment.get<string>('reaction_emoji', 'string', false));
             }
         } else {
             console.warn(`Channel does not exist.`);
