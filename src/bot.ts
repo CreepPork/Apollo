@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { QueryResult } from 'gamedig';
 import Discord from './discord';
 import Environment from './environment';
@@ -54,12 +55,24 @@ export default class Bot {
             console.info('Apollo is ready.');
         });
 
-        this.discord.client.on('message', message => {
+        this.discord.client.on('message', this.onMessage);
+    }
+
+    private onMessage(message: Message) {
+        // If posted message is the plain !update then refresh bot embed and status
             if (message.content === Environment.get<string | undefined>('refresh_command', 'string', true)) {
                 this.refresh();
-            } else if (message.content ===
-                Environment.get<string | undefined>('refresh_force_command', 'string', true)) {
+        } else if (message.content === Environment.get<string | undefined>('refresh_force_command', 'string', true)) {
+            // If posted message is !updateForce then check if permission checking is enabled.
                     if (Environment.get<boolean>('limit_refresh_force_to_manager', 'boolean')) {
+                this.refreshBotWithRolePermissions(message);
+            } else {
+                this.refresh(true);
+            }
+        }
+    }
+
+    private refreshBotWithRolePermissions(message: Message) {
                         const roles = this.discord.getAllRoles(message.member.guild.id);
 
                         if (roles) {
@@ -93,11 +106,6 @@ export default class Bot {
 
                             this.refresh(true);
                         }
-                    } else {
-                        this.refresh(true);
-                    }
-            }
-        });
     }
 
     private async refresh(forceNewMessage = false) {
