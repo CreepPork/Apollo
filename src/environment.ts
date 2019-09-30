@@ -59,6 +59,8 @@ export type getValues =
     'maintenance_toggle_command' |
     'reaction_message_id' |
     'reaction_role_id' |
+    'minimum_player_count_for_ping' |
+    'timeout_between_player_pings_in_minutes' |
     'limit_refresh_force_to_manager' |
     'reply_dm_on_no_perms' |
     'channel_id' |
