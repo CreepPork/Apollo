@@ -26,7 +26,7 @@ export default class Discord {
         this.locale = Environment.locale;
     }
 
-    public async createRichEmbed(query?: QueryResult) {
+    public async createRichEmbed(query?: QueryResult, maintenanceMode?: boolean) {
         if (query) {
             return new discord.RichEmbed({
                 color: await this.getColor('ok'),
@@ -35,6 +35,14 @@ export default class Discord {
                 fields: await this.getSuccessFields(query),
                 timestamp: new Date(),
                 title: query.name,
+            });
+        } else if (maintenanceMode) {
+            return new discord.RichEmbed({
+                color: await this.getColor('maintenance'),
+                description: this.getDescriptionRepeater(this.locale.serverDownForMaintenance),
+                fields: this.getMaintenanceFields(),
+                timestamp: new Date(),
+                title: this.locale.serverDownForMaintenance,
             });
         } else {
             return new discord.RichEmbed({
@@ -47,7 +55,7 @@ export default class Discord {
         }
     }
 
-    public setActivity(status: 'ok' | 'serverError' | 'botError', query?: QueryResult) {
+    public setActivity(status: 'ok' | 'serverError' | 'botError' | 'maintenance', query?: QueryResult) {
         if (query && status === 'ok') {
             let name = `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`;
 
@@ -69,6 +77,13 @@ export default class Discord {
                     type: 'WATCHING',
                 },
                 status: 'dnd',
+            }).catch(error => console.error(error));
+        } else if (status === 'maintenance') {
+            this._client.user.setPresence({
+                game: {
+                    name: this.locale.presence.maintenance,
+                    type: 'WATCHING',
+                },
             }).catch(error => console.error(error));
         } else {
             this._client.user.setPresence({
@@ -189,12 +204,27 @@ export default class Discord {
         return hasRole;
     }
 
-    private getColor(status: 'error' | 'ok'): Promise<string> {
+    private getColor(status: keyof IColors): Promise<string> {
         return new Promise((resolve, reject) => {
-            const colors: IColors = {ok: Environment.get('color_ok'), error: Environment.get('color_error')};
+            const colors: IColors = {
+                error: Environment.get('color_error'),
+                maintenance: Environment.get('color_maintenance'),
+                ok: Environment.get('color_ok'),
+            };
 
-            if (status === 'error') { resolve(colors.error); }
-            if (status === 'ok') { resolve(colors.ok); }
+            switch (status) {
+                case 'error':
+                    resolve(colors.error);
+                    break;
+
+                case 'ok':
+                    resolve(colors.ok);
+                    break;
+
+                case 'maintenance':
+                    resolve(colors.maintenance);
+                    break;
+            }
 
             reject(`${status} is not a valid status.`);
         });
@@ -219,6 +249,18 @@ export default class Discord {
                     `${this.locale.serverDownMessages.pleaseFixServer}`,
             },
         ];
+    }
+
+    private getMaintenanceFields(): IField[] {
+        return [{
+            inline: false,
+            name: this.locale.statuses.status,
+            value: this.locale.statuses.offline,
+        }, {
+            inline: false,
+            name: this.locale.serverDownForMaintenance,
+            value: this.locale.serverDownForMaintenanceDescription,
+        }];
     }
 
     private async getSuccessFields(query: QueryResult): Promise<IField[]> {

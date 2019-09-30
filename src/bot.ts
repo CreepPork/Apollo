@@ -12,6 +12,8 @@ export default class Bot {
     private refreshFails = 0;
     private maxRefreshFails = Environment.get<number>('maximum_refresh_failures', 'number');
 
+    private maintenanceMode: boolean;
+
     private get query(): Promise<QueryResult | undefined> {
         return new Promise(resolve => {
             this.server.queryServer().then(query => {
@@ -44,6 +46,7 @@ export default class Bot {
     constructor() {
         this.discord = new Discord(Environment.get('secret'));
         this.server = new Server(Environment.get('ip'), Environment.get<number>('port', 'number'));
+        this.maintenanceMode = false;
     }
 
     public start() {
@@ -60,55 +63,95 @@ export default class Bot {
 
     private onMessage(message: Message) {
         // If posted message is the plain !update then refresh bot embed and status
-            if (message.content === Environment.get<string | undefined>('refresh_command', 'string', true)) {
-                this.refresh();
+        if (message.content === Environment.get<string | undefined>('refresh_command', 'string', true)) {
+            this.refresh();
         } else if (message.content === Environment.get<string | undefined>('refresh_force_command', 'string', true)) {
             // If posted message is !updateForce then check if permission checking is enabled.
-                    if (Environment.get<boolean>('limit_refresh_force_to_manager', 'boolean')) {
+            if (Environment.get<boolean>('limit_refresh_force_to_manager', 'boolean')) {
                 this.refreshBotWithRolePermissions(message);
             } else {
                 this.refresh(true);
             }
+        } else if (message.content === Environment.get('maintenance_toggle_command', 'string', true)) {
+            this.toggleMaintenanceMode(message);
+        }
+    }
+
+    private async toggleMaintenanceMode(message: Message) {
+        // Maintenance mode turned off
+        if (this.maintenanceMode) {
+            this.maintenanceMode = false;
+
+            this.postMaintenanceMessage(message);
+
+            this.refresh();
+        } else {
+            // Maintenance mode turned on
+            this.maintenanceMode = true;
+
+            this.discord.startThinking();
+
+            this.postMaintenanceMessage(message);
+
+            // If an error message was posted, remove it
+            this.removeErrorMessage();
+
+            // If an embed was already posted
+            const messageId = Settings.get().messageId;
+            const embed = await this.discord.createRichEmbed(undefined, this.maintenanceMode);
+
+            if (messageId) {
+                await this.discord.editMessage(messageId, embed);
+            } else {
+                const id = await this.discord.postMessage(embed);
+                Settings.set('messageId', id);
+            }
+
+            this.discord.setActivity('maintenance', undefined);
+
+            this.discord.stopThinking();
         }
     }
 
     private refreshBotWithRolePermissions(message: Message) {
-                        const roles = this.discord.getAllRoles(message.member.guild.id);
+        const roles = this.discord.getAllRoles(message.member.guild.id);
 
-                        if (roles) {
-                            const serverManager = roles.get(Environment.get('server_manager_role_id'));
+        if (roles) {
+            const serverManager = roles.get(Environment.get('server_manager_role_id'));
 
-                            if (serverManager) {
-                                const allowedRoles = this.discord.getRolesAboveOrSame(serverManager);
+            if (serverManager) {
+                const allowedRoles = this.discord.getRolesAboveOrSame(serverManager);
 
-                                if (this.discord.doesUserHaveRoles(message.member, allowedRoles)) {
-                                    this.refresh(true);
-                                } else {
-                                    if (Environment.get<boolean>('reply_dm_on_no_perms', 'boolean')) {
-                                        message.author.send(`${message.member} ${Environment.locale.noPermissions}`);
-                                    } else {
-                                        message.channel.send(`${message.member} ${Environment.locale.noPermissions}`);
-                                    }
-                                }
-                            } else {
-                                console.warn(
-                                    'You have turned on limit force refresh to server managers or above.',
-                                    `I can't find the server manager role. Did you enter the ID correctly?`,
-                                );
+                if (this.discord.doesUserHaveRoles(message.member, allowedRoles)) {
+                    this.refresh(true);
+                } else {
+                    if (Environment.get<boolean>('reply_dm_on_no_perms', 'boolean')) {
+                        message.author.send(`${message.member} ${Environment.locale.noPermissions}`);
+                    } else {
+                        message.channel.send(`${message.member} ${Environment.locale.noPermissions}`);
+                    }
+                }
+            } else {
+                console.warn(
+                    'You have turned on limit force refresh to server managers or above.',
+                    `I can't find the server manager role. Did you enter the ID correctly?`,
+                );
 
-                                this.refresh(true);
-                            }
-                        } else {
-                            console.warn(
-                                'You have turned on limit force refresh to server managers or above.',
-                                `But I can't find any server roles. Does your server have roles set up?`,
-                            );
+                this.refresh(true);
+            }
+        } else {
+            console.warn(
+                'You have turned on limit force refresh to server managers or above.',
+                `But I can't find any server roles. Does your server have roles set up?`,
+            );
 
-                            this.refresh(true);
-                        }
+            this.refresh(true);
+        }
     }
 
     private async refresh(forceNewMessage = false) {
+        if (this.maintenanceMode) { return; }
+
         await this.discord.startThinking();
 
         const messageId = Settings.get().messageId;
@@ -157,11 +200,11 @@ export default class Bot {
 
     private removeErrorMessage() {
         const errorMessageId = Settings.get().errorMessageId;
-            if (errorMessageId) {
-                this.discord.deleteMessage(errorMessageId);
-                Settings.set('errorMessageId', undefined);
-            }
+        if (errorMessageId) {
+            this.discord.deleteMessage(errorMessageId);
+            Settings.set('errorMessageId', undefined);
         }
+    }
 
     private refreshLoop() {
         const timeToWait = Environment.get<number>('time_to_check_minutes', 'number') * 1000 * 60;
@@ -178,5 +221,13 @@ export default class Bot {
         this.discord.postMessage(content).then(errorMessageId => {
             Settings.set('errorMessageId', errorMessageId);
         });
+    }
+
+    private postMaintenanceMessage(message: Message) {
+        const content = this.maintenanceMode
+            ? Environment.locale.maintenanceMessages.enabled
+            : Environment.locale.maintenanceMessages.disabled;
+
+        message.channel.send(content);
     }
 }

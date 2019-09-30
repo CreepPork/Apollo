@@ -44,6 +44,7 @@
 - Displays when bot is refreshing info
 - Times to refresh before failing and displaying on Discord
 - Sentry error managment
+- Maintenance mode to stop it polling the server unnecessarily without taking the bot down
 
 ## Requirements
 - Node >= 10.15.3
@@ -68,3 +69,4 @@
 ## Available commands
 - `!update` to quickly get info about the server status.
 - `!updateForce` to create a new message about the server status.
+- `!maintenanceMode` to toggle Apollo's maintenance mode feature.

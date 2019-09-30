@@ -43,6 +43,7 @@ export default class Environment {
 export interface IColors {
     error: string;
     ok: string;
+    maintenance: string;
 }
 
 export type getValues =
@@ -51,9 +52,11 @@ export type getValues =
     'port' |
     'color_ok' |
     'color_error' |
+    'color_maintenance' |
     'locale' |
     'refresh_command' |
     'refresh_force_command' |
+    'maintenance_toggle_command' |
     'limit_refresh_force_to_manager' |
     'reply_dm_on_no_perms' |
     'channel_id' |
