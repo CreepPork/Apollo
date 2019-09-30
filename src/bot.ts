@@ -55,7 +55,7 @@ export default class Bot {
             console.info('Apollo is ready.');
         });
 
-        this.discord.client.on('message', this.onMessage);
+        this.discord.client.on('message', message => this.onMessage(message));
     }
 
     private onMessage(message: Message) {
