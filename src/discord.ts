@@ -51,8 +51,8 @@ export default class Discord {
         if (query && status === 'ok') {
             let name = `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`;
 
-            if (query.map) {
-                name = `${query.map ? query.map : this.locale.noMap} (${query.players.length}/${query.maxplayers})`;
+            if (! query.map) {
+                name = `${this.locale.noMap} (${query.players.length}/${query.maxplayers})`;
             }
 
             this._client.user.setPresence({
