@@ -151,12 +151,17 @@ export default class Bot {
                 this.postErrorMessage();
             }
         } else {
+            this.removeErrorMessage();
+        }
+    }
+
+    private removeErrorMessage() {
+        const errorMessageId = Settings.get().errorMessageId;
             if (errorMessageId) {
                 this.discord.deleteMessage(errorMessageId);
                 Settings.set('errorMessageId', undefined);
             }
         }
-    }
 
     private refreshLoop() {
         const timeToWait = Environment.get<number>('time_to_check_minutes', 'number') * 1000 * 60;
