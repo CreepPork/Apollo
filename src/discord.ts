@@ -40,6 +40,7 @@ export default class Discord {
             return new discord.RichEmbed({
                 color: await this.getColor('error'),
                 description: this.getDescriptionRepeater(this.locale.serverOffline),
+                fields: this.getErrorFields(),
                 timestamp: new Date(),
                 title: this.locale.serverOffline,
             });
@@ -204,6 +205,7 @@ export default class Discord {
         return '─'.repeat(text.length * 0.625);
     }
 
+    private getErrorFields(): IField[] {
         return [
             {
                 inline: false,
