@@ -45,6 +45,7 @@
 - Times to refresh before failing and displaying on Discord
 - Sentry error managment
 - Maintenance mode to stop it polling the server unnecessarily without taking the bot down
+- Pings a specific role when a configurable threshold is reached (also provides role assignment via a reaction)
 
 ## Requirements
 - Node >= 10.15.3

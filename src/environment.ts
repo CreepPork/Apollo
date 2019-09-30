@@ -57,6 +57,8 @@ export type getValues =
     'refresh_command' |
     'refresh_force_command' |
     'maintenance_toggle_command' |
+    'reaction_message_id' |
+    'reaction_role_id' |
     'limit_refresh_force_to_manager' |
     'reply_dm_on_no_perms' |
     'channel_id' |

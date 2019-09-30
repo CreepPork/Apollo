@@ -11,6 +11,7 @@ export default class Discord {
     private locale: Locale;
 
     private loginInterval?: NodeJS.Timeout;
+    private reaction?: discord.MessageReaction;
 
     public get client(): discord.Client {
         return this._client;
@@ -39,6 +40,9 @@ export default class Discord {
         });
 
         this.locale = Environment.locale;
+
+        this._client.on('raw', (event: any) => this.onRawEvent(event));
+        this._client.on('ready', () => this.addReactionToReactionMessage());
     }
 
     public async createRichEmbed(query?: QueryResult, maintenanceMode?: boolean) {
@@ -219,6 +223,10 @@ export default class Discord {
         return hasRole;
     }
 
+    public addRoleToUser(user: discord.User, role: discord.Role | string): Promise<discord.GuildMember> {
+        return this.client.guilds.first().member(user).addRole(role);
+    }
+
     public doesUserHaveServerManagerPermissions(member: discord.GuildMember): boolean {
         const roles = this.getAllRoles(member.guild.id);
 
@@ -271,6 +279,62 @@ export default class Discord {
 
             reject(`${status} is not a valid status.`);
         });
+    }
+
+    private onRawEvent(event: any) {
+        if (event.t === 'MESSAGE_REACTION_ADD') {
+            this.onMessageReactionAdd(event);
+        } else if (event.t === 'MESSAGE_REACTION_REMOVE') {
+            this.onMessageReactionRemove(event);
+        }
+    }
+
+    private async addReactionToReactionMessage() {
+        const reactionId = Environment.get<string>('reaction_message_id', 'string', true);
+
+        if (this.channel) {
+            const message = await this.channel.fetchMessage(reactionId);
+
+            if (message) {
+                this.reaction = await message.react('🚨');
+            }
+        } else {
+            console.warn(`Channel does not exist.`);
+        }
+    }
+
+    private async onMessageReactionAdd(event: IReactionEvent) {
+        if (event.d.message_id === Environment.get('reaction_message_id', 'string', true)) {
+            if (this.reaction) {
+                const users = await this.reaction.fetchUsers();
+                const role = Environment.get<string | undefined>('reaction_role_id', 'string', true);
+
+                for (const user of users) {
+                    // Don't give the role to the bot
+                    if (user[0] === this._client.user.id) { continue; }
+
+                    if (role) {
+                        this.addRoleToUser(user[1], role);
+                    } else {
+                        console.warn('No reaction role id has been set in the .env file.');
+                    }
+                }
+            }
+        }
+    }
+
+    private async onMessageReactionRemove(event: IReactionEvent) {
+        if (event.d.message_id === Environment.get('reaction_message_id', 'string', true)) {
+            if (this.reaction) {
+                const role = Environment.get<string | undefined>('reaction_role_id', 'string', true);
+
+                if (role) {
+                    this.client.guilds.first().member(event.d.user_id).removeRole(role);
+                } else {
+                    console.warn('Role id does not exist.');
+                }
+            }
+        }
     }
 
     private getDescriptionRepeater(text: string): string {
@@ -361,4 +425,24 @@ interface IField {
     inline?: boolean;
     name: string;
     value: string;
+}
+
+interface IReactionEvent {
+    /**
+     * Event type e.g. `MESSAGE_REACTION_ADD`
+     */
+    t: string;
+    s: number;
+    op: 0;
+    d: {
+        user_id: string;
+        message_id: string;
+        emoji: {
+            name: string;
+            id: string | null;
+            animated: boolean;
+        };
+        channel_id: string;
+        guild_id: string;
+    };
 }
