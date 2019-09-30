@@ -114,7 +114,7 @@ export default class Bot {
                 this.discord.setActivity('botError');
                 this.discord.stopThinking();
 
-                console.error(`Failed to edit a current message, id: ${messageId}.`);
+                console.error(`Failed to edit current message, id: ${messageId}.`);
                 console.error(error);
             });
         } else {
