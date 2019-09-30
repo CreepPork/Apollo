@@ -10,6 +10,8 @@ export default class Discord {
     private _client: discord.Client;
     private locale: Locale;
 
+    private loginInterval?: NodeJS.Timeout;
+
     public get client(): discord.Client {
         return this._client;
     }
@@ -21,7 +23,20 @@ export default class Discord {
 
     constructor(secret: string) {
         this._client = new discord.Client();
-        this._client.login(secret).catch(error => console.error(error));
+
+        // Retry Discord auth every 10 seconds if failed
+        this._client.login(secret).catch(error => {
+            this.loginInterval = setInterval(() => {
+                this._client.login(secret).then(() => {
+                    if (this.loginInterval) {
+                        clearInterval(this.loginInterval);
+                        this.loginInterval = undefined;
+                    }
+                });
+            }, 10 * 1000);
+
+            console.error(error);
+        });
 
         this.locale = Environment.locale;
     }
