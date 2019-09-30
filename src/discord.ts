@@ -31,7 +31,7 @@ export default class Discord {
             return new discord.RichEmbed({
                 color: await this.getColor('ok'),
                 // As the ─ is just a little larger than the actual letters, it isn't equal to the letter count
-                description: '─'.repeat(query.name.length * 0.625),
+                description: this.getDescriptionRepeater(query.name),
                 fields: await this.getSuccessFields(query),
                 timestamp: new Date(),
                 title: query.name,
@@ -39,8 +39,7 @@ export default class Discord {
         } else {
             return new discord.RichEmbed({
                 color: await this.getColor('error'),
-                description: '─'.repeat(this.locale.serverOffline.length * 0.625),
-                fields: await this.getErrorFields(),
+                description: this.getDescriptionRepeater(this.locale.serverOffline),
                 timestamp: new Date(),
                 title: this.locale.serverOffline,
             });
@@ -200,7 +199,11 @@ export default class Discord {
         });
     }
 
-    private async getErrorFields(): Promise<IField[]> {
+    private getDescriptionRepeater(text: string): string {
+        // Repeat the dashes for 62.5% of the text length
+        return '─'.repeat(text.length * 0.625);
+    }
+
         return [
             {
                 inline: false,
