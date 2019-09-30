@@ -2,6 +2,7 @@ export default interface ILocale {
     address: string;
     map: string;
     mission: string;
+    noMap: string;
     noPermissions: string;
     noPlayers: string;
     playerCount: string;

@@ -4,6 +4,7 @@ const locale: ILocale = {
     address: 'Adrese',
     map: 'Karte',
     mission: 'Misija',
+    noMap: 'Nav izvēlētas kartes',
     noPermissions: `tev nav piekļuves, lai es izpildītu šo komandu!`,
     noPlayers: 'Nav spēlētāju',
     playerCount: 'Spēlētāju skaits',

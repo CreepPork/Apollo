@@ -49,9 +49,15 @@ export default class Discord {
 
     public setActivity(status: 'ok' | 'serverError' | 'botError', query?: QueryResult) {
         if (query && status === 'ok') {
+            let name = `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`;
+
+            if (query.map) {
+                name = `${query.map ? query.map : this.locale.noMap} (${query.players.length}/${query.maxplayers})`;
+            }
+
             this._client.user.setPresence({
                 game: {
-                    name: `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`,
+                    name,
                     type: 'PLAYING',
                 },
                 status: 'online',
@@ -240,7 +246,7 @@ export default class Discord {
             {
                 inline: false,
                 name: this.locale.map,
-                value: query.map,
+                value: query.map ? query.map : this.locale.noMap,
             },
             {
                 inline: false,

@@ -4,6 +4,7 @@ const locale: ILocale = {
     address: 'Address',
     map: 'Map',
     mission: 'Mission',
+    noMap: 'No map selected',
     noPermissions: `you don't have the permissions to do that!`,
     noPlayers: 'No players',
     playerCount: 'Player count',

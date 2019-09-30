@@ -21,7 +21,7 @@ declare module 'gamedig' {
 
     export interface QueryResult {
         name: string;
-        map: string;
+        map?: string;
         password: boolean;
         maxplayers: number;
         players: Player[];
