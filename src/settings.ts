@@ -24,4 +24,6 @@ export default class Settings {
 export interface ISettings {
     errorMessageId?: string;
     messageId?: string;
+    pingMessageId?: string;
+    lastPingMessageTime?: string;
 }

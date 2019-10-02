@@ -24,6 +24,13 @@
   - Locale support - out of the box support for English and Latvian. Easy setup for a new language.  
   ![Latvian locale](https://i.gyazo.com/f346e70713da313298d2c777ea08fe86.png)
 
+  - Maintenance mode is a easy, toggable feature that prevents server down pings from being posted and doesn't poll the server until the mode is toggled again.
+  ![Maintenance mode embed message](https://i.gyazo.com/de8b2c8df19ad04b5ad36dcc399e4aea.png)
+  ![Private message when enabled](https://i.gyazo.com/45da0c4ea051e9f2a87f163df75ac3e9.png)
+
+  - A specific role is available to be pinged when a certain threshold of players is reached. This allows Discord users to get a ping when a configurable amount of players are on the server. Apollo also provides a way of adding these roles via a emoji reaction which assigns and removes the given role.
+  ![Pinged role threshold is reached](https://i.gyazo.com/ff04b7e4a32ef280ce6059004223efd2.png)
+
 </details>
 
 ## Features
@@ -44,6 +51,8 @@
 - Displays when bot is refreshing info
 - Times to refresh before failing and displaying on Discord
 - Sentry error managment
+- Maintenance mode to stop it polling the server unnecessarily without taking the bot down
+- Pings a specific role when a configurable threshold is reached (also provides role assignment via a reaction)
 
 ## Requirements
 - Node >= 10.15.3
@@ -65,6 +74,15 @@
 - Good to go!
 
 
+## Adding a new locale
+1. `cp src/locales/en.ts src/locales/<language-tag>.ts`
+2. Rewrite strings for your locale
+3. Configure `LOCALE=<language-tag>` to match your new file
+4. `npm run build`
+5. Done!
+
+
 ## Available commands
 - `!update` to quickly get info about the server status.
 - `!updateForce` to create a new message about the server status.
+- `!maintenanceMode` to toggle Apollo's maintenance mode feature.

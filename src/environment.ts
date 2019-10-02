@@ -43,6 +43,7 @@ export default class Environment {
 export interface IColors {
     error: string;
     ok: string;
+    maintenance: string;
 }
 
 export type getValues =
@@ -51,9 +52,16 @@ export type getValues =
     'port' |
     'color_ok' |
     'color_error' |
+    'color_maintenance' |
     'locale' |
     'refresh_command' |
     'refresh_force_command' |
+    'maintenance_toggle_command' |
+    'reaction_message_id' |
+    'reaction_role_id' |
+    'reaction_emoji' |
+    'minimum_player_count_for_ping' |
+    'timeout_between_player_pings_in_minutes' |
     'limit_refresh_force_to_manager' |
     'reply_dm_on_no_perms' |
     'channel_id' |
