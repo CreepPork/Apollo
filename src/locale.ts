@@ -1,7 +1,12 @@
 export default interface ILocale {
     address: string;
+    maintenanceMessages: {
+        disabled: string;
+        enabled: string;
+    };
     map: string;
     mission: string;
+    noMap: string;
     noPermissions: string;
     noPlayers: string;
     playerCount: string;
@@ -10,8 +15,11 @@ export default interface ILocale {
         botFailure: string;
         ok: string,
         error: string;
+        maintenance: string;
     };
     queryTime: string;
+    serverDownForMaintenance: string;
+    serverDownForMaintenanceDescription: string;
     serverDownMessages: {
         pingMessage: string;
         serverDownAlternative: string;
