@@ -4,6 +4,7 @@ import Discord from './discord';
 import Environment from './environment';
 import Server from './server';
 import Settings from './settings';
+import Time from './time';
 
 export default class Bot {
     private discord: Discord;
@@ -179,6 +180,34 @@ export default class Bot {
             }
         } else {
             this.removeErrorMessage();
+        }
+
+        // Post role ping message if threshold reached
+        if (query) {
+            const minPlayers = Environment.get<number>('minimum_player_count_for_ping', 'number', true);
+            if (query.players.length >= minPlayers) {
+                // Don't duplicate the message
+                if (! Settings.get().pingMessageId) {
+                    const pingMessageId = await this.discord.postMessage(
+                        this.discord.generatePing(Environment.get('reaction_role_id')) +
+                        ` ${minPlayers} ${Environment.locale.pingMessage}`,
+                    );
+
+                    Settings.set('pingMessageId', pingMessageId);
+                    Settings.set('lastPingMessageTime', new Date().toISOString());
+                }
+            } else {
+                const settings = Settings.get();
+
+                if (settings.pingMessageId && settings.lastPingMessageTime) {
+                    if (Time.getDiffMinutes(new Date(), new Date(settings.lastPingMessageTime)) >=
+                        Environment.get<number>('timeout_between_player_pings_in_minutes', 'number', false)) {
+                            this.discord.deleteMessage(settings.pingMessageId);
+
+                            Settings.set('pingMessageId', undefined);
+                    }
+                }
+            }
         }
     }
 

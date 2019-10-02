@@ -9,6 +9,7 @@ export default interface ILocale {
     noMap: string;
     noPermissions: string;
     noPlayers: string;
+    pingMessage: string;
     playerCount: string;
     playerList: string;
     presence: {

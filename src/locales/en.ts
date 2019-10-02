@@ -11,6 +11,7 @@ const locale: ILocale = {
     noMap: 'No map selected',
     noPermissions: `you don't have the permissions to do that!`,
     noPlayers: 'No players',
+    pingMessage: 'player threshold has been reached on the server. Hop on now!',
     playerCount: 'Player count',
     playerList: 'Player list',
     presence: {

@@ -11,6 +11,7 @@ const locale: ILocale = {
     noMap: 'Nav izvēlētas kartes',
     noPermissions: `tev nav piekļuves, lai es izpildītu šo komandu!`,
     noPlayers: 'Nav spēlētāju',
+    pingMessage: 'spelētāju skaits tika sasniegts. Nākat spēlēt!',
     playerCount: 'Spēlētāju skaits',
     playerList: 'Spēlētāju saraksts',
     presence: {
