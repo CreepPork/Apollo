@@ -15,7 +15,7 @@
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
     "@types/node": "^11.13.6",
-    "tslint": "^5.16.0",
+    "tslint": "^5.20.0",
     "typescript": "^3.4.4"
   },
   "dependencies": {
