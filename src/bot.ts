@@ -241,6 +241,6 @@ export default class Bot {
             ? Environment.locale.maintenanceMessages.enabled
             : Environment.locale.maintenanceMessages.disabled;
 
-        message.channel.send(content);
+        message.author.send(content);
     }
 }
