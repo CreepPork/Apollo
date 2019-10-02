@@ -44,6 +44,8 @@
 - Displays when bot is refreshing info
 - Times to refresh before failing and displaying on Discord
 - Sentry error managment
+- Maintenance mode to stop it polling the server unnecessarily without taking the bot down
+- Pings a specific role when a configurable threshold is reached (also provides role assignment via a reaction)
 
 ## Requirements
 - Node >= 10.15.3
@@ -65,6 +67,15 @@
 - Good to go!
 
 
+## Adding a new locale
+1. `cp src/locales/en.ts src/locales/<language-tag>.ts`
+2. Rewrite strings for your locale
+3. Configure `LOCALE=<language-tag>` to match your new file
+4. `npm run build`
+5. Done!
+
+
 ## Available commands
 - `!update` to quickly get info about the server status.
 - `!updateForce` to create a new message about the server status.
+- `!maintenanceMode` to toggle Apollo's maintenance mode feature.

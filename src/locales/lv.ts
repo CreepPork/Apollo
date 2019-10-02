@@ -2,8 +2,13 @@ import ILocale from '../locale';
 
 const locale: ILocale = {
     address: 'Adrese',
+    maintenanceMessages: {
+        disabled: 'Es izslēdzu apkopes režīmu un atkal sekoju līdzi serverim!',
+        enabled: 'Es ieslēdzu apkopes režīmu un vairāk nesekošu līdzi izmaiņām serverī!',
+    },
     map: 'Karte',
     mission: 'Misija',
+    noMap: 'Nav izvēlētas kartes',
     noPermissions: `tev nav piekļuves, lai es izpildītu šo komandu!`,
     noPlayers: 'Nav spēlētāju',
     playerCount: 'Spēlētāju skaits',
@@ -11,9 +16,12 @@ const locale: ILocale = {
     presence: {
         botFailure: 'bota kļūdu',
         error: 'kā serveri labo',
+        maintenance: 'kā apkalpo serveri',
         ok: 'Misija uz',
     },
     queryTime: 'Atjauninājuma laiks',
+    serverDownForMaintenance: 'Notiek servera apkope',
+    serverDownForMaintenanceDescription: 'Serverim ir pašlaik noetiek paradzēta apkope. Pārbaudiet statusu vēlāk!',
     serverDownMessages: {
         pingMessage: ', serveris neatbild, lūdzu salabo!',
         pleaseFixServer: ', lūdzu, salabo serveri!',
