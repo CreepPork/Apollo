@@ -8,7 +8,7 @@ const locale: ILocale = {
     },
     map: 'Map',
     mission: 'Mission',
-    noMap: 'No map selected',
+    noMap: 'No Map Selected',
     noPermissions: `you don't have the permissions to do that!`,
     noPlayers: 'No players',
     pingMessage: 'player threshold has been reached on the server. Hop on now!',

@@ -8,7 +8,7 @@ const locale: ILocale = {
     },
     map: 'Karte',
     mission: 'Misija',
-    noMap: 'Nav izvēlētas kartes',
+    noMap: 'Nav Izvēlēta Karte',
     noPermissions: `tev nav piekļuves, lai es izpildītu šo komandu!`,
     noPlayers: 'Nav spēlētāju',
     pingMessage: 'spelētāju skaits tika sasniegts. Nākat spēlēt!',
