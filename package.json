@@ -16,7 +16,7 @@
     "@types/dotenv": "^6.1.1",
     "@types/node": "^11.13.6",
     "tslint": "^5.16.0",
-    "typescript": "^3.4.4"
+    "typescript": "^3.6.3"
   },
   "dependencies": {
     "@sentry/integrations": "^5.2.0",
