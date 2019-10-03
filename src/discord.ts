@@ -23,7 +23,9 @@ export default class Discord {
     }
 
     constructor(secret: string) {
-        this._client = new discord.Client();
+        this._client = new discord.Client({
+            fetchAllMembers: true,
+        });
 
         // Retry Discord auth every 10 seconds if failed
         this._client.login(secret).catch(error => {
