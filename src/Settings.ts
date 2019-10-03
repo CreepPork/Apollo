@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import ISettings from './interfaces/ISettings';
 
 export default class Settings {
     public static get(): ISettings {
@@ -21,9 +22,4 @@ export default class Settings {
     }
 }
 
-export interface ISettings {
-    errorMessageId?: string;
-    messageId?: string;
-    pingMessageId?: string;
-    lastPingMessageTime?: string;
-}
+

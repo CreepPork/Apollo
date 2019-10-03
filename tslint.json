@@ -33,7 +33,7 @@
         "label-position": true,
         "file-name-casing": [
             true,
-            "camel-case"
+            "pascal-case"
         ],
         "newline-before-return": true,
         "no-console": false,

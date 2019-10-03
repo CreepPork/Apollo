@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-import ILocale from './locale';
+import ILocale from './interfaces/ILocale';
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
@@ -38,12 +38,6 @@ export default class Environment {
 
             throw new Error(`${valueUpper} is not defined in your .env file.`);
     }
-}
-
-export interface IColors {
-    error: string;
-    ok: string;
-    maintenance: string;
 }
 
 export type getValues =

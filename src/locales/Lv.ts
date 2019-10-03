@@ -1,4 +1,4 @@
-import ILocale from '../locale';
+import ILocale from '../interfaces/ILocale';
 
 const locale: ILocale = {
     address: 'Adrese',
