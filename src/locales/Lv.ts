@@ -34,6 +34,6 @@ const locale: ILocale = {
         online: 'Pieejams',
         status: 'Statuss',
     },
-}
+};
 
 export default locale;
