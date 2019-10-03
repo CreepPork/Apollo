@@ -223,8 +223,12 @@ export default class Discord {
         return hasRole;
     }
 
-    public addRoleToUser(user: discord.User, role: discord.Role | string): Promise<discord.GuildMember> {
-        return this.client.guilds.first().member(user).addRole(role);
+    public addRoleToUser(user: discord.User, role: discord.Role | string) {
+        const member = this.client.guilds.first().member(user);
+
+        if (member) {
+            member.addRole(role);
+        }
     }
 
     public doesUserHaveServerManagerPermissions(member: discord.GuildMember): boolean {
@@ -329,7 +333,11 @@ export default class Discord {
                 const role = Environment.get<string | undefined>('reaction_role_id', 'string', true);
 
                 if (role) {
-                    this.client.guilds.first().member(event.d.user_id).removeRole(role);
+                    const member = this.client.guilds.first().member(event.d.user_id);
+
+                    if (member) {
+                        member.removeRole(role);
+                    }
                 } else {
                     console.warn('Role id does not exist.');
                 }
