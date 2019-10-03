@@ -1,10 +1,10 @@
 import { Message } from 'discord.js';
 import { QueryResult } from 'gamedig';
-import Discord from './Discord';
-import Environment from './Environment';
-import Server from './Server';
-import Settings from './Settings';
-import Time from './Time';
+import Discord from './discord';
+import Environment from './environment';
+import Server from './server';
+import Settings from './settings';
+import Time from './time';
 
 export default class Bot {
     private discord: Discord;

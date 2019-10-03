@@ -1,12 +1,9 @@
 import * as discord from 'discord.js';
 
 import { QueryResult } from 'gamedig';
-import Environment from './Environment';
-import IColors from './interfaces/IColors';
-import IField from './interfaces/IField';
-import Locale from './interfaces/ILocale';
-import IReactionEvent from './interfaces/IReactionEvent';
-import Time from './Time';
+import Environment, { IColors } from './environment';
+import Locale from './locale';
+import Time from './time';
 
 export default class Discord {
     // tslint:disable-next-line: variable-name
@@ -422,4 +419,30 @@ export default class Discord {
             },
         ];
     }
+}
+
+interface IField {
+    inline?: boolean;
+    name: string;
+    value: string;
+}
+
+interface IReactionEvent {
+    /**
+     * Event type e.g. `MESSAGE_REACTION_ADD`
+     */
+    t: string;
+    s: number;
+    op: 0;
+    d: {
+        user_id: string;
+        message_id: string;
+        emoji: {
+            name: string;
+            id: string | null;
+            animated: boolean;
+        };
+        channel_id: string;
+        guild_id: string;
+    };
 }

@@ -1,6 +1,6 @@
 import { CaptureConsole, RewriteFrames } from '@sentry/integrations';
 import * as sentry from '@sentry/node';
-import Environment from './Environment';
+import Environment from './environment';
 
 const { name, version } = require('../package.json');
 
