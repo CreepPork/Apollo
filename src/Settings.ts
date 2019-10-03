@@ -21,3 +21,5 @@ export default class Settings {
         fs.writeFileSync(path.join(__dirname, '../', 'settings.json'), JSON.stringify(settings, undefined, 4));
     }
 }
+
+
