@@ -66,8 +66,6 @@
 - Configure the `.env` file
 - `npm run build`
 - **Linux only** If you want `pm2` support
-  - `python3 setupPm2.py`
-  - `pm2 list`
   - `pm2 start pm2.config.js`
   - Good to go! Don't run `npm start`.
 - `npm start`
