@@ -35,6 +35,6 @@ const locale: ILocale = {
         status: 'Statuss',
     },
     tooManyPlayers: 'Pārāk daudz spēlētāju, lai visus parādītu',
-}
+};
 
 export default locale;
