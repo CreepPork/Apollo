@@ -32,4 +32,5 @@ export default interface ILocale {
         online: string,
         status: string,
     };
+    tooManyPlayers: string;
 }

@@ -34,6 +34,7 @@ const locale: ILocale = {
         online: 'Pieejams',
         status: 'Statuss',
     },
+    tooManyPlayers: 'Pārāk daudz spēlētāju, lai visus parādītu',
 }
 
 export default locale;

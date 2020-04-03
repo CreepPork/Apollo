@@ -34,6 +34,7 @@ const locale: ILocale = {
         online: 'Online',
         status: 'Status',
     },
+    tooManyPlayers: 'Too many players to display',
 };
 
 export default locale;

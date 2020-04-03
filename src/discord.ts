@@ -1,6 +1,6 @@
 import * as discord from 'discord.js';
 
-import { QueryResult } from 'gamedig';
+import { QueryResult, Player } from 'gamedig';
 import Environment, { IColors } from './environment';
 import Locale from './locale';
 import Time from './time';
@@ -80,7 +80,7 @@ export default class Discord {
         if (query && status === 'ok') {
             let name = `${this.locale.presence.ok} ${query.map} (${query.players.length}/${query.maxplayers})`;
 
-            if (! query.map) {
+            if (!query.map) {
                 name = `${this.locale.noMap} (${query.players.length}/${query.maxplayers})`;
             }
 
@@ -380,16 +380,29 @@ export default class Discord {
         }];
     }
 
+    private getPlayerDisplayText(player: Player): string {
+        return `• ${player.name} (${Time.secondsToHhMm(player.time)})`;
+    }
+
+    private getPlayerListCharacterCount(players: Player[]): number {
+        return players
+            .map(p => this.getPlayerDisplayText(p).length)
+            .reduce((prev, curr) => prev + curr);
+    }
+
     private async getSuccessFields(query: QueryResult): Promise<IField[]> {
         const playerListData = ['```py'];
 
-        if (query.players.length) {
+        // Check if the embed doesn't go over the maximum allowed Discord value
+        if (query.players.length && this.getPlayerListCharacterCount(query.players) < 1024) {
             // Sort alphabetically
             query.players.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 
             query.players.forEach(player => {
-                playerListData.push(`• ${player.name} (${Time.secondsToHhMm(player.time)})`);
+                playerListData.push(this.getPlayerDisplayText(player));
             });
+        } else if (query.players.length) {
+            playerListData.push(this.locale.tooManyPlayers);
         } else {
             playerListData.push(this.locale.noPlayers);
         }
