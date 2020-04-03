@@ -22,7 +22,7 @@ const locale: ILocale = {
     },
     queryTime: 'Atjauninājuma laiks',
     serverDownForMaintenance: 'Notiek servera apkope',
-    serverDownForMaintenanceDescription: 'Serverim ir pašlaik noetiek paradzēta apkope. Pārbaudiet statusu vēlāk!',
+    serverDownForMaintenanceDescription: 'Serverim pašlaik notiek paradzēta apkope. Pārbaudiet statusu vēlāk!',
     serverDownMessages: {
         pingMessage: ', serveris neatbild, lūdzu salabo!',
         pleaseFixServer: ', lūdzu, salabo serveri!',
