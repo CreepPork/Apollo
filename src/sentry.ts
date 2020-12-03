@@ -1,4 +1,4 @@
-import { CaptureConsole, RewriteFrames } from '@sentry/integrations';
+import { RewriteFrames } from '@sentry/integrations';
 import * as sentry from '@sentry/node';
 import Environment from './environment';
 
@@ -14,7 +14,6 @@ export default class Sentry {
                 new RewriteFrames({
                     root: global.__rootdir__,
                 }),
-                new CaptureConsole(),
             ],
             release: `${name}@${version}`,
         });
