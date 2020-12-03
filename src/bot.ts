@@ -51,12 +51,14 @@ export default class Bot {
     }
 
     public start() {
-        this.discord.client.on('ready', () => {
-            this.refresh();
-
-            this.refreshLoop();
-
+        this.discord.client.on('ready', async () => {
             console.info('Apollo is ready.');
+            console.info('Performing first-start refresh.');
+
+            await this.refresh();
+
+            console.info('First-time refresh done, starting refresh loop.');
+            this.refreshLoop();
         });
 
         this.discord.client.on('message', message => this.onMessage(message));
@@ -74,7 +76,7 @@ export default class Bot {
                 this.refresh(true);
             }
         } else if (message.content === Environment.get('maintenance_toggle_command', 'string', true)) {
-            if (this.discord.doesUserHaveServerManagerPermissions(message.member)) {
+            if (message.member && this.discord.doesUserHaveServerManagerPermissions(message.member)) {
                 this.toggleMaintenanceMode(message);
             } else {
                 this.replyNoPermissions(message);
@@ -119,7 +121,7 @@ export default class Bot {
     }
 
     private refreshBotWithRolePermissions(message: Message) {
-        if (this.discord.doesUserHaveServerManagerPermissions(message.member)) {
+        if (message.member && this.discord.doesUserHaveServerManagerPermissions(message.member)) {
             this.refresh(true);
         } else {
             this.replyNoPermissions(message);
@@ -137,12 +139,12 @@ export default class Bot {
     private async refresh(forceNewMessage = false) {
         if (this.maintenanceMode) { return; }
 
-        await this.discord.startThinking();
+        this.discord.startThinking();
 
         const messageId = Settings.get().messageId;
         const query = await this.query;
 
-        if (messageId && ! forceNewMessage) {
+        if (messageId && !forceNewMessage) {
             this.discord.editMessage(messageId, await this.discord.createRichEmbed(query)).then(() => {
                 this.discord.setActivity(query ? 'ok' : 'serverError', query);
                 this.discord.stopThinking();
@@ -174,8 +176,8 @@ export default class Bot {
 
         const errorMessageId = Settings.get().errorMessageId;
 
-        if (! query) {
-            if (! errorMessageId) {
+        if (!query) {
+            if (!errorMessageId) {
                 this.postErrorMessage();
             }
         } else {
@@ -187,7 +189,7 @@ export default class Bot {
             const minPlayers = Environment.get<number>('minimum_player_count_for_ping', 'number', true);
             if (query.players.length >= minPlayers) {
                 // Don't duplicate the message
-                if (! Settings.get().pingMessageId) {
+                if (!Settings.get().pingMessageId) {
                     const pingMessageId = await this.discord.postMessage(
                         this.discord.generatePing(Environment.get('reaction_role_id')) +
                         ` ${minPlayers} ${Environment.locale.pingMessage}`,
@@ -202,9 +204,9 @@ export default class Bot {
                 if (settings.pingMessageId && settings.lastPingMessageTime) {
                     if (Time.getDiffMinutes(new Date(), new Date(settings.lastPingMessageTime)) >=
                         Environment.get<number>('timeout_between_player_pings_in_minutes', 'number', false)) {
-                            this.discord.deleteMessage(settings.pingMessageId);
+                        this.discord.deleteMessage(settings.pingMessageId);
 
-                            Settings.set('pingMessageId', undefined);
+                        Settings.set('pingMessageId', undefined);
                     }
                 }
             }
@@ -222,8 +224,8 @@ export default class Bot {
     private refreshLoop() {
         const timeToWait = Environment.get<number>('time_to_check_minutes', 'number') * 1000 * 60;
 
-        setInterval(() => {
-            this.refresh();
+        setInterval(async () => {
+            await this.refresh();
         }, timeToWait);
     }
 

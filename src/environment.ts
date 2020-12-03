@@ -1,13 +1,12 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-
 import ILocale from './locale';
 
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
 export default class Environment {
     public static get locale(): ILocale {
-        if (! process.env.LOCALE) {
+        if (!process.env.LOCALE) {
             throw new Error('LOCALE is not defined in your .env file.');
         }
 
@@ -19,31 +18,31 @@ export default class Environment {
     public static get<T extends string | number | boolean | undefined>(
         value: getValues, returnType: 'string' | 'number' | 'boolean' = 'string',
         canBeUndefined?: boolean): T {
-            const valueUpper = value.toUpperCase();
+        const valueUpper = value.toUpperCase();
 
-            // tslint:disable-next-line: no-eval
-            const computed: string | undefined = eval(`process.env.${valueUpper}`);
+        // tslint:disable-next-line: no-eval
+        const computed: string | undefined = eval(`process.env.${valueUpper}`);
 
-            if (computed) {
-                if (returnType === 'string') {
-                    return computed as T;
-                } else if (returnType === 'number') {
-                    return parseInt(computed, 10) as T;
-                } else if (returnType === 'boolean') {
-                    return (computed === 'true') as T;
-                }
-            } else if (canBeUndefined) {
-                return undefined as T;
+        if (computed) {
+            if (returnType === 'string') {
+                return computed as T;
+            } else if (returnType === 'number') {
+                return parseInt(computed, 10) as T;
+            } else if (returnType === 'boolean') {
+                return (computed === 'true') as T;
             }
+        } else if (canBeUndefined) {
+            return undefined as T;
+        }
 
-            throw new Error(`${valueUpper} is not defined in your .env file.`);
+        throw new Error(`${valueUpper} is not defined in your .env file.`);
     }
 }
 
 export interface IColors {
-    error: string;
-    ok: string;
-    maintenance: string;
+    error: number;
+    ok: number;
+    maintenance: number;
 }
 
 export type getValues =

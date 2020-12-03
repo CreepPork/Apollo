@@ -1,29 +1,29 @@
 {
-  "name": "apollo",
-  "version": "2.2.0",
-  "description": "Discord bot that allows to get status updates on your server.",
-  "main": "dist/main.js",
-  "repository": "https://github.com/CreepPork/Apollo",
-  "scripts": {
-    "lint": "tslint -c tslint.json 'src/**/.ts'",
-    "start": "node .",
-    "build": "tsc -p tsconfig.json",
-    "watch": "npm run build -- --watch"
-  },
-  "author": "CreepPork_LV",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/dotenv": "^6.1.1",
-    "@types/node": "^12.7.9",
-    "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
-  },
-  "dependencies": {
-    "@sentry/integrations": "^5.6.1",
-    "@sentry/node": "^5.6.2",
-    "discord.js": "^11.5.1",
-    "dotenv": "^8.0.0",
-    "gamedig": "^2.0.14",
-    "moment": "^2.24.0"
-  }
+    "name": "apollo",
+    "version": "3.0.0",
+    "description": "Discord bot that allows to get status updates on your server.",
+    "main": "dist/main.js",
+    "repository": "https://github.com/CreepPork/Apollo",
+    "scripts": {
+        "lint": "tslint -c tslint.json 'src/**/.ts'",
+        "start": "node .",
+        "build": "tsc -p tsconfig.json",
+        "watch": "npm run build -- --watch"
+    },
+    "author": "CreepPork_LV",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/dotenv": "^6.1.1",
+        "@types/node": "^12.7.9",
+        "tslint": "^5.20.0",
+        "typescript": "^3.6.3"
+    },
+    "dependencies": {
+        "@sentry/integrations": "^5.6.1",
+        "@sentry/node": "^5.6.2",
+        "discord.js": "^12.5.1",
+        "dotenv": "^8.0.0",
+        "gamedig": "^2.0.14",
+        "moment": "^2.24.0"
+    }
 }

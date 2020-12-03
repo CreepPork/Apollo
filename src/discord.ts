@@ -1,6 +1,5 @@
 import * as discord from 'discord.js';
-
-import { QueryResult, Player } from 'gamedig';
+import { Player, QueryResult } from 'gamedig';
 import Environment, { IColors } from './environment';
 import Locale from './locale';
 import Time from './time';
@@ -17,29 +16,42 @@ export default class Discord {
         return this._client;
     }
 
-    private get channel(): discord.TextChannel | discord.GroupDMChannel | discord.DMChannel | undefined {
-        /// @ts-ignore Typings are incorrect, it returns extended types of channels
-        return this._client.channels.get(Environment.get('channel_id'));
+    private get channel(): discord.TextChannel | undefined {
+        return this._client.channels.cache.get(Environment.get('channel_id')) as discord.TextChannel;
     }
 
     constructor(secret: string) {
         this._client = new discord.Client({
             fetchAllMembers: true,
+            partials: ['REACTION', 'MESSAGE', 'CHANNEL', 'GUILD_MEMBER', 'USER'],
+            ws: {
+                intents: [
+                    'DIRECT_MESSAGES',
+                    'GUILDS',
+                    'GUILD_MEMBERS',
+                    'GUILD_MESSAGE_REACTIONS',
+                    'GUILD_MESSAGES',
+                ],
+            },
         });
 
         // Retry Discord auth every 10 seconds if failed
-        this._client.login(secret).catch(error => {
-            this.loginInterval = setInterval(() => {
-                this._client.login(secret).then(() => {
-                    if (this.loginInterval) {
-                        clearInterval(this.loginInterval);
-                        this.loginInterval = undefined;
-                    }
-                });
-            }, 10 * 1000);
+        this._client.login(secret)
+            .then(() => {
+                console.info('Bot has logged in');
+            })
+            .catch(error => {
+                this.loginInterval = setInterval(() => {
+                    this._client.login(secret).then(() => {
+                        if (this.loginInterval) {
+                            clearInterval(this.loginInterval);
+                            this.loginInterval = undefined;
+                        }
+                    });
+                }, 10 * 1000);
 
-            console.error(error);
-        });
+                console.error(error);
+            });
 
         this.locale = Environment.locale;
 
@@ -49,7 +61,7 @@ export default class Discord {
 
     public async createRichEmbed(query?: QueryResult, maintenanceMode?: boolean) {
         if (query) {
-            return new discord.RichEmbed({
+            return new discord.MessageEmbed({
                 color: await this.getColor('ok'),
                 // As the ─ is just a little larger than the actual letters, it isn't equal to the letter count
                 description: this.getDescriptionRepeater(query.name),
@@ -58,7 +70,7 @@ export default class Discord {
                 title: query.name,
             });
         } else if (maintenanceMode) {
-            return new discord.RichEmbed({
+            return new discord.MessageEmbed({
                 color: await this.getColor('maintenance'),
                 description: this.getDescriptionRepeater(this.locale.serverDownForMaintenance),
                 fields: this.getMaintenanceFields(),
@@ -66,7 +78,7 @@ export default class Discord {
                 title: this.locale.serverDownForMaintenance,
             });
         } else {
-            return new discord.RichEmbed({
+            return new discord.MessageEmbed({
                 color: await this.getColor('error'),
                 description: this.getDescriptionRepeater(this.locale.serverOffline),
                 fields: this.getErrorFields(),
@@ -84,40 +96,48 @@ export default class Discord {
                 name = `${this.locale.noMap} (${query.players.length}/${query.maxplayers})`;
             }
 
-            this._client.user.setPresence({
-                game: {
-                    name,
-                    type: 'PLAYING',
-                },
-                status: 'online',
-            }).catch(error => console.error(error));
+            if (this._client.user) {
+                this._client.user.setPresence({
+                    activity: {
+                        name,
+                        type: 'PLAYING',
+                    },
+                    status: 'online',
+                }).catch(error => console.error(error));
+            }
         } else if (status === 'serverError') {
-            this._client.user.setPresence({
-                game: {
-                    name: this.locale.presence.error,
-                    type: 'WATCHING',
-                },
-                status: 'dnd',
-            }).catch(error => console.error(error));
+            if (this._client.user) {
+                this._client.user.setPresence({
+                    activity: {
+                        name: this.locale.presence.error,
+                        type: 'WATCHING',
+                    },
+                    status: 'dnd',
+                }).catch(error => console.error(error));
+            }
         } else if (status === 'maintenance') {
-            this._client.user.setPresence({
-                game: {
-                    name: this.locale.presence.maintenance,
-                    type: 'WATCHING',
-                },
-            }).catch(error => console.error(error));
+            if (this._client.user) {
+                this._client.user.setPresence({
+                    activity: {
+                        name: this.locale.presence.maintenance,
+                        type: 'WATCHING',
+                    },
+                }).catch(error => console.error(error));
+            }
         } else {
-            this._client.user.setPresence({
-                game: {
-                    name: this.locale.presence.botFailure,
-                    type: 'STREAMING',
-                },
-                status: 'idle',
-            }).catch(error => console.error(error));
+            if (this._client.user) {
+                this._client.user.setPresence({
+                    activity: {
+                        name: this.locale.presence.botFailure,
+                        type: 'STREAMING',
+                    },
+                    status: 'idle',
+                }).catch(error => console.error(error));
+            }
         }
     }
 
-    public postMessage(content: discord.RichEmbed | string): Promise<string> {
+    public postMessage(content: discord.MessageEmbed | string): Promise<string> {
         return new Promise((resolve, reject) => {
             if (this.channel) {
                 this.channel.send(typeof content === 'string' ? content : { embed: content }).then(messages => {
@@ -133,10 +153,10 @@ export default class Discord {
         });
     }
 
-    public editMessage(messageId: string, embed: discord.RichEmbed): Promise<string> {
+    public editMessage(messageId: string, embed: discord.MessageEmbed): Promise<string> {
         return new Promise((resolve, reject) => {
             if (this.channel) {
-                this.channel.fetchMessage(messageId).then(message => {
+                this.channel.messages.fetch(messageId).then(message => {
                     message.edit({ embed })
                         .then(editedMessage => resolve(editedMessage.id))
                         .catch(error => reject(error));
@@ -150,7 +170,7 @@ export default class Discord {
     public deleteMessage(messageId: string): Promise<discord.Message> {
         return new Promise((resolve, reject) => {
             if (this.channel) {
-                this.channel.fetchMessage(messageId).then(message => {
+                this.channel.messages.fetch(messageId).then(message => {
                     message.delete().then(deletedMessage => {
                         resolve(deletedMessage);
                     });
@@ -161,24 +181,20 @@ export default class Discord {
         });
     }
 
-    public startThinking(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (this.channel) {
-                resolve(this.channel.startTyping());
-            } else {
-                reject('Channel does not exist.');
-            }
-        });
+    public startThinking(): void {
+        if (this.channel) {
+            this.channel.startTyping();
+        } else {
+            return console.error('Channel does not exist.');
+        }
     }
 
-    public stopThinking(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (this.channel) {
-                resolve(this.channel.stopTyping());
-            } else {
-                reject('Channel does not exist.');
-            }
-        });
+    public stopThinking(): void {
+        if (this.channel) {
+            this.channel.stopTyping();
+        } else {
+            return console.error('Channel does not exist.');
+        }
     }
 
     public generatePing(id: string): string {
@@ -186,10 +202,10 @@ export default class Discord {
     }
 
     public getAllRoles(guildId: string): discord.Collection<discord.Snowflake, discord.Role> | undefined {
-        const guild = this.client.guilds.get(guildId);
+        const guild = this._client.guilds.cache.get(guildId);
 
         if (guild) {
-            return guild.roles;
+            return guild.roles.cache;
         } else {
             return undefined;
         }
@@ -217,7 +233,7 @@ export default class Discord {
         let hasRole = false;
 
         roles.forEach(role => {
-            if (member.roles.has(role.id)) {
+            if (member.roles.cache.has(role.id)) {
                 hasRole = true;
             }
         });
@@ -226,10 +242,16 @@ export default class Discord {
     }
 
     public addRoleToUser(user: discord.User, role: discord.Role | string) {
-        const member = this.client.guilds.first().member(user);
+        const guild = this._client.guilds.cache.first();
+
+        if (guild === undefined) {
+            return;
+        }
+
+        const member = guild.members.cache.get(user.id);
 
         if (member) {
-            member.addRole(role);
+            member.roles.add(role);
         }
     }
 
@@ -261,12 +283,12 @@ export default class Discord {
         return false;
     }
 
-    private getColor(status: keyof IColors): Promise<string> {
+    private getColor(status: keyof IColors): Promise<number> {
         return new Promise((resolve, reject) => {
             const colors: IColors = {
-                error: Environment.get('color_error'),
-                maintenance: Environment.get('color_maintenance'),
-                ok: Environment.get('color_ok'),
+                error: parseInt(Environment.get('color_error'), 10),
+                maintenance: parseInt(Environment.get('color_maintenance'), 10),
+                ok: parseInt(Environment.get('color_ok'), 10),
             };
 
             switch (status) {
@@ -299,7 +321,7 @@ export default class Discord {
         const reactionId = Environment.get<string>('reaction_message_id', 'string', true);
 
         if (this.channel) {
-            const message = await this.channel.fetchMessage(reactionId);
+            const message = await this.channel.messages.fetch(reactionId);
 
             if (message) {
                 this.reaction = await message.react(Environment.get<string>('reaction_emoji', 'string', false));
@@ -312,12 +334,12 @@ export default class Discord {
     private async onMessageReactionAdd(event: IReactionEvent) {
         if (event.d.message_id === Environment.get('reaction_message_id', 'string', true)) {
             if (this.reaction) {
-                const users = await this.reaction.fetchUsers();
+                const users = await this.reaction.users.fetch();
                 const role = Environment.get<string | undefined>('reaction_role_id', 'string', true);
 
                 for (const user of users) {
                     // Don't give the role to the bot
-                    if (user[0] === this._client.user.id) { continue; }
+                    if (this._client.user && user[0] === this._client.user.id) { continue; }
 
                     if (role) {
                         this.addRoleToUser(user[1], role);
@@ -335,10 +357,16 @@ export default class Discord {
                 const role = Environment.get<string | undefined>('reaction_role_id', 'string', true);
 
                 if (role) {
-                    const member = this.client.guilds.first().member(event.d.user_id);
+                    const guild = this._client.guilds.cache.first();
+
+                    if (guild === undefined) {
+                        return;
+                    }
+
+                    const member = guild.members.cache.get(event.d.user_id);
 
                     if (member) {
-                        member.removeRole(role);
+                        member.roles.remove(role);
                     }
                 } else {
                     console.warn('Role id does not exist.');

@@ -55,9 +55,12 @@
 - Pings a specific role when a configurable threshold is reached (also provides role assignment via a reaction)
 
 ## Requirements
-- Node >= 10.15.3
-- NPM >= 6.4.1
+- Node >= **12.x**
+- NPM
 
+## Upgrade guide to v3
+1. Upgrade your Node.js version to 12.x or above
+2. In `https://discord.com/developers/applications/xxx/bot` page, enable the toggle `SERVER MEMBERS INTENT`. This is now required for Apollo to fetch your server users, due to recent API changes.
 
 ## Setup
 - Get the code
